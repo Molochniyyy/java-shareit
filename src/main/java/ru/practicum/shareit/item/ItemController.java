@@ -18,31 +18,31 @@ public class ItemController {
 
     @PostMapping
     public Item add(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                    @RequestBody ItemDto itemDto){
+                    @RequestBody ItemDto itemDto) {
         return service.add(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
     public Item update(@RequestHeader("X-Sharer-User-Id") Integer userId,
                        @RequestBody ItemDto itemDto,
-                       @PathVariable Integer itemId){
+                       @PathVariable Integer itemId) {
         return service.update(userId, itemId, itemDto);
     }
 
     @GetMapping("/{itemId}")
     public Item getById(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                        @PathVariable Integer itemId){
+                        @PathVariable Integer itemId) {
         return service.getById(userId, itemId);
     }
 
     @GetMapping
-    public List<Item> getOfUser(@RequestHeader("X-Sharer-User-Id") Integer userId){
+    public List<Item> getOfUser(@RequestHeader("X-Sharer-User-Id") Integer userId) {
         return service.checkItems(userId);
     }
 
     @GetMapping("/search")
     public List<Item> search(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                             @RequestParam("text") String text){
+                             @RequestParam("text") String text) {
         return service.searchItems(userId, text);
     }
 }

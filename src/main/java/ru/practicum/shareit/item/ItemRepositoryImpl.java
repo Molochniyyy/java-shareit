@@ -12,7 +12,7 @@ import java.util.*;
 
 @Repository
 @RequiredArgsConstructor
-public class ItemRepositoryImpl implements ItemRepository{
+public class ItemRepositoryImpl implements ItemRepository {
 
     private final UserRepository userRepository;
     private Integer nextId = 1;
@@ -20,7 +20,7 @@ public class ItemRepositoryImpl implements ItemRepository{
     private final Map<Integer, Item> items = new HashMap<>();
 
     @Override
-    public Item add(Integer userId, Item item){
+    public Item add(Integer userId, Item item) {
         checkUser(userId);
         item.setId(nextId++);
         User owner = userRepository.getById(userId);
@@ -30,26 +30,26 @@ public class ItemRepositoryImpl implements ItemRepository{
     }
 
     @Override
-    public Item update(Integer userId, Integer itemId, Item item){
-        if(!Objects.equals(items.get(itemId).getOwner().getId(), userId)){
+    public Item update(Integer userId, Integer itemId, Item item) {
+        if (!Objects.equals(items.get(itemId).getOwner().getId(), userId)) {
             throw new UserAccessException("Только владелец может обновить вещь");
         }
         checkItem(itemId);
         item.setId(itemId);
         User owner = userRepository.getById(userId);
         item.setOwner(owner);
-        items.put(itemId,getItem(item,itemId));
+        items.put(itemId, getItem(item, itemId));
         return getItem(item, itemId);
     }
 
     @Override
-    public Item getById(Integer userId, Integer itemId){
+    public Item getById(Integer userId, Integer itemId) {
         checkItem(itemId);
         return items.get(itemId);
     }
 
     @Override
-    public List<Item> checkItemsOfUser(Integer userId){
+    public List<Item> checkItemsOfUser(Integer userId) {
         List<Item> itemList = new ArrayList<>();
         for (Item item : items.values()) {
             if (Objects.equals(item.getOwner().getId(), userId)) {
@@ -60,15 +60,15 @@ public class ItemRepositoryImpl implements ItemRepository{
     }
 
     @Override
-    public List<Item> searchItems(Integer userId, String text){
+    public List<Item> searchItems(Integer userId, String text) {
         List<Item> itemList = new ArrayList<>();
-        if(text.isEmpty() || text.isBlank()){
+        if (text.isEmpty() || text.isBlank()) {
             return itemList;
         }
         for (Item item : items.values()) {
-            if(item.getName().toLowerCase().contains(text.toLowerCase())||
-                    item.getDescription().toLowerCase().contains(text.toLowerCase())){
-                if(item.getAvailable()) {
+            if (item.getName().toLowerCase().contains(text.toLowerCase()) ||
+                    item.getDescription().toLowerCase().contains(text.toLowerCase())) {
+                if (item.getAvailable()) {
                     itemList.add(item);
                 }
             }
@@ -76,19 +76,19 @@ public class ItemRepositoryImpl implements ItemRepository{
         return itemList;
     }
 
-    private void checkUser(Integer userId){
+    private void checkUser(Integer userId) {
         if (userRepository.getById(userId) == null) {
             throw new UserNotFoundException("Пользователя с таким id не существует");
         }
     }
 
-    private void checkItem(Integer itemId){
+    private void checkItem(Integer itemId) {
         if (!items.containsKey(itemId)) {
             throw new ItemNotFoundException("Такого предмета не существует");
         }
     }
 
-    private Item getItem(Item item, Integer itemId){
+    private Item getItem(Item item, Integer itemId) {
         if (item.getName() == null) {
             item.setName(items.get(itemId).getName());
         }

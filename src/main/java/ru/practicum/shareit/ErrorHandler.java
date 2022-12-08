@@ -11,37 +11,37 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleItemNotFoundException(final ItemNotFoundException e){
+    public ErrorResponse handleItemNotFoundException(final ItemNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleEmailConflictException(final ConflictEmailException e){
+    public ErrorResponse handleEmailConflictException(final ConflictEmailException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleFailEmailException(final FailEmailException e){
+    public ErrorResponse handleFailEmailException(final FailEmailException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleUserNotFoundException(final UserNotFoundException e){
+    public ErrorResponse handleUserNotFoundException(final UserNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleFailItemException(final FailItemException e){
+    public ErrorResponse handleFailItemException(final FailItemException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorResponse handleUserAccessException(final UserAccessException e){
+    public ErrorResponse handleUserAccessException(final UserAccessException e) {
         return new ErrorResponse(e.getMessage());
     }
 
