@@ -6,9 +6,6 @@ import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
@@ -17,32 +14,32 @@ public class ItemController {
     private final ItemService service;
 
     @PostMapping
-    public Item add(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                    @RequestBody ItemDto itemDto) {
-        return service.add(userId, itemDto);
+    public ItemDto add(@RequestHeader("X-Sharer-User-Id") Integer userId,
+                       @RequestBody ItemDto itemDto) {
+        return ItemWrapper.toItemDto(service.add(userId, ItemWrapper.toItem(itemDto)));
     }
 
     @PatchMapping("/{itemId}")
-    public Item update(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                       @RequestBody ItemDto itemDto,
-                       @PathVariable Integer itemId) {
-        return service.update(userId, itemId, itemDto);
+    public ItemDto update(@RequestHeader("X-Sharer-User-Id") Integer userId,
+                          @RequestBody ItemDto itemDto,
+                          @PathVariable Integer itemId) {
+        return ItemWrapper.toItemDto(service.update(userId, itemId, ItemWrapper.toItem(itemDto)));
     }
 
     @GetMapping("/{itemId}")
-    public Item getById(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                        @PathVariable Integer itemId) {
-        return service.getById(userId, itemId);
+    public ItemDto getById(@RequestHeader("X-Sharer-User-Id") Integer userId,
+                           @PathVariable Integer itemId) {
+        return ItemWrapper.toItemDto(service.getById(userId, itemId));
     }
 
     @GetMapping
-    public List<Item> getOfUser(@RequestHeader("X-Sharer-User-Id") Integer userId) {
-        return service.checkItems(userId);
+    public List<ItemDto> getOfUser(@RequestHeader("X-Sharer-User-Id") Integer userId) {
+        return ItemWrapper.toListOfDto(service.checkItems(userId));
     }
 
     @GetMapping("/search")
-    public List<Item> search(@RequestHeader("X-Sharer-User-Id") Integer userId,
-                             @RequestParam("text") String text) {
-        return service.searchItems(userId, text);
+    public List<ItemDto> search(@RequestHeader("X-Sharer-User-Id") Integer userId,
+                                @RequestParam("text") String text) {
+        return ItemWrapper.toListOfDto(service.searchItems(userId, text));
     }
 }

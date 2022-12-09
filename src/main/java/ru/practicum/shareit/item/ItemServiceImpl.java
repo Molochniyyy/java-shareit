@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.FailItemException;
-import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.util.List;
 
@@ -16,16 +15,16 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository repository;
 
     @Override
-    public Item add(Integer userId, ItemDto itemDto) {
-        checkItem(itemDto);
+    public Item add(Integer userId, Item item) {
+        checkItem(item);
         log.info("Попытка добавить вещь");
-        return repository.add(userId, ItemWrapper.toItem(itemDto));
+        return repository.add(userId, item);
     }
 
     @Override
-    public Item update(Integer userId, Integer itemId, ItemDto itemDto) {
+    public Item update(Integer userId, Integer itemId, Item item) {
         log.info("Попытка обновить вещь с id = {}", itemId);
-        return repository.update(userId, itemId, ItemWrapper.toItem(itemDto));
+        return repository.update(userId, itemId, item);
     }
 
     @Override
@@ -46,14 +45,14 @@ public class ItemServiceImpl implements ItemService {
         return repository.searchItems(userId, text);
     }
 
-    private void checkItem(ItemDto itemDto) {
-        if (itemDto.getAvailable() == null) {
+    private void checkItem(Item item) {
+        if (item.getAvailable() == null) {
             throw new FailItemException("Не указан параметр available");
         }
-        if (itemDto.getName() == null || itemDto.getName().equals("")) {
+        if (item.getName() == null || item.getName().equals("")) {
             throw new FailItemException("Пустое или незаполненное имя");
         }
-        if (itemDto.getDescription() == null || itemDto.getDescription().equals("")) {
+        if (item.getDescription() == null || item.getDescription().equals("")) {
             throw new FailItemException("Пустое или незаполненное описание");
         }
     }
