@@ -1,88 +1,38 @@
 package ru.practicum.shareit.user;
 
-import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.exceptions.ConflictEmailException;
-import ru.practicum.shareit.exceptions.FailEmailException;
-import ru.practicum.shareit.exceptions.UserNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.model.UserWrapper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+@Component
+public class UserRepositoryImpl {
 
-@Repository
-public class UserRepositoryImpl implements UserRepository {
+    private final UserRepository repository;
 
-    private Integer nextId = 1;
-
-    private final Map<Integer, User> users = new HashMap<>();
-
-    @Override
-    public User add(User user) {
-        emailCheck(user);
-        user.setId(nextId++);
-        users.put(user.getId(), user);
-        return user;
+    @Autowired
+    public UserRepositoryImpl(@Lazy UserRepository repository) {
+        this.repository = repository;
     }
 
-    @Override
-    public User update(Integer id, User user) {
-        idCheck(id);
-        if (user.getEmail() != null) {
-            if (!user.getEmail().contains("@")) {
-                throw new FailEmailException("Email не содержит символа - @");
-            }
-            for (User u : users.values()) {
-                if (u.getEmail().equals(user.getEmail())) {
-                    throw new ConflictEmailException("Email уже используется");
-                }
-            }
+    public UserDto update(Long userId, User user) {
+        if (user.getName() != null && user.getEmail() == null && repository.findById(userId).isPresent()) {
+            repository.findById(userId).get().setName(user.getName());
+        } else if (user.getName() != null && user.getEmail() != null) {
+            UserValidator.isValidEmailUser(user);
+            repository.findById(userId).get().setName(user.getName());
+            repository.findById(userId).get().setEmail(user.getEmail());
+        } else {
+            UserValidator.isValidEmailUser(user);
+            repository.findById(userId).get().setEmail(user.getEmail());
         }
-        if (user.getName() == null) {
-            user.setName(users.get(id).getName());
-        }
-        if (user.getEmail() == null) {
-            user.setEmail(users.get(id).getEmail());
-        }
-        user.setId(id);
-        users.put(id, user);
-        return user;
+
+        User saveUser = repository.findById(userId).get();
+        repository.save(saveUser);
+
+        return UserWrapper.toUserDto(repository.findById(userId).get());
     }
 
-    @Override
-    public User getById(Integer id) {
-        idCheck(id);
-        return users.get(id);
-    }
-
-    @Override
-    public void delete(Integer id) {
-        idCheck(id);
-        users.remove(id);
-    }
-
-    @Override
-    public List<User> get() {
-        return new ArrayList<>(users.values());
-    }
-
-    private void emailCheck(User user) {
-        if (user.getEmail() == null) {
-            throw new FailEmailException("Email отсутствует");
-        }
-        if (!user.getEmail().contains("@")) {
-            throw new FailEmailException("Email не содержит символа - @");
-        }
-        for (User u : users.values()) {
-            if (u.getEmail().equals(user.getEmail())) {
-                throw new ConflictEmailException("Email уже используется");
-            }
-        }
-    }
-
-    private void idCheck(Integer id) {
-        if (!users.containsKey(id)) {
-            throw new UserNotFoundException("Пользователя с таким id не существует");
-        }
-    }
 }

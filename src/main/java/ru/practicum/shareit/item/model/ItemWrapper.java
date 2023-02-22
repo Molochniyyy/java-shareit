@@ -1,6 +1,7 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.model;
 
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +12,8 @@ public class ItemWrapper {
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
-                item.getOwner(),
-                item.getRequest()
+                item.getOwnerId(),
+                item.getRequestId()
         );
     }
 
@@ -21,8 +22,8 @@ public class ItemWrapper {
                 itemDto.getName(),
                 itemDto.getDescription(),
                 itemDto.getAvailable(),
-                itemDto.getOwner(),
-                itemDto.getRequest());
+                itemDto.getOwnerId(),
+                itemDto.getRequestId());
     }
 
     public static List<ItemDto> toListOfDto(List<Item> items) {
