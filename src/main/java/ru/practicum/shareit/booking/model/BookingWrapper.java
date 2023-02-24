@@ -17,10 +17,6 @@ public class BookingWrapper {
                 .status(booking.getStatus())
                 .build();
     }
-
-    /**
-     * Конвертация Booking в BookingDtoItem
-     */
     public static BookingDtoItem toBookingDtoItem(Booking booking) {
         return BookingDtoItem.builder()
                 .id(booking.getId())

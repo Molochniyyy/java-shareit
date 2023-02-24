@@ -1,29 +1,28 @@
 package ru.practicum.shareit.item.model;
 
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class ItemWrapper {
     public static ItemDto toItemDto(Item item) {
-        return new ItemDto(item.getId(),
-                item.getName(),
-                item.getDescription(),
-                item.getAvailable(),
-                item.getOwnerId(),
-                item.getRequestId()
-        );
+        return ItemDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .available(item.getAvailable())
+                .description(item.getDescription())
+                .requestId(item.getRequestId())
+                .build();
     }
 
     public static Item toItem(ItemDto itemDto) {
-        return new Item(itemDto.getId(),
-                itemDto.getName(),
-                itemDto.getDescription(),
-                itemDto.getAvailable(),
-                itemDto.getOwnerId(),
-                itemDto.getRequestId());
+        return Item.builder()
+                .id(itemDto.getId())
+                .name(itemDto.getName())
+                .available(itemDto.getAvailable())
+                .description(itemDto.getDescription())
+                .requestId(itemDto.getRequestId())
+                .build();
     }
 
     public static List<ItemDto> toListOfDto(List<Item> items) {

@@ -11,7 +11,6 @@ import ru.practicum.shareit.item.model.ItemWrapper;
 import java.util.*;
 
 
-
 @Component
 public class ItemRepositoryImpl {
 
@@ -24,14 +23,22 @@ public class ItemRepositoryImpl {
 
     public ItemDto update(Long userId, Long itemId, Item item) {
         Item newItem = repository.findById(itemId).orElseThrow(() -> new ItemNotFoundException("Вещь не найдена"));
+        if (item.getName() != null) {
+            newItem.setName(item.getName());
+        }
+        if (item.getDescription() != null) {
+            newItem.setDescription(item.getDescription());
+        }
+        if (item.getRequestId() != null) {
+            newItem.setRequestId(item.getRequestId());
+        }
+        if (item.getAvailable() != null) {
+            newItem.setAvailable(item.getAvailable());
+        }
 
-        newItem.setName(item.getName());
-        newItem.setDescription(item.getDescription());
-        newItem.setRequestId(item.getRequestId());
-        newItem.setAvailable(item.getAvailable());
-
-        if (Objects.equals(item.getOwnerId(), userId)) {
+        if (Objects.equals(newItem.getOwnerId(), userId)) {
             newItem.setOwnerId(userId);
+            repository.save(newItem);
             return ItemWrapper.toItemDto(newItem);
         } else {
             throw new OwnerNotFoundException("Пользователь не является владельцем вещи");
