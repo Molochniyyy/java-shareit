@@ -47,19 +47,19 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleOwnerNotFoundException(final  OwnerNotFoundException e){
+    public ErrorResponse handleOwnerNotFoundException(final OwnerNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidationException(final  ValidationException e){
+    public ErrorResponse handleValidationException(final ValidationException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleBookingNotFoundException(final  BookingNorFoundException e){
+    public ErrorResponse handleBookingNotFoundException(final BookingNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
 
@@ -74,7 +74,6 @@ public class ErrorHandler {
     public ErrorResponse handleBookingException(final FailBookingException e) {
         return new ErrorResponse(e.getMessage());
     }
-
 
 
     @ExceptionHandler

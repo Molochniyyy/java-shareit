@@ -13,11 +13,11 @@ import ru.practicum.shareit.user.model.User;
 
 @Component
 public class BookingRepositoryImpl {
-    final private BookingRepository repository;
+    private final BookingRepository repository;
 
-    final private ItemRepository itemRepository;
+    private final ItemRepository itemRepository;
 
-    final private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public BookingRepositoryImpl(@Lazy BookingRepository repository, @Lazy ItemRepository itemRepository,
                                  UserRepository userRepository) {
@@ -28,7 +28,7 @@ public class BookingRepositoryImpl {
 
     public BookingDto update(Long userId, Long bookingId, String approved) {
         Booking booking = repository.findById(bookingId)
-                .orElseThrow(() -> new BookingNorFoundException("Такого бронирования не существует"));
+                .orElseThrow(() -> new BookingNotFoundException("Такого бронирования не существует"));
         if (booking.getStatus().equals(BookingStatus.APPROVED)) {
             throw new BookingApprovedStatusException("Бронирование уже одобрено");
         } else {

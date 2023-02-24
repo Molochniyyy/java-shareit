@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.model;
 
-import jdk.jfr.Enabled;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

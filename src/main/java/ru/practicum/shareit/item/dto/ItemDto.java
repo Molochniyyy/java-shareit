@@ -5,13 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import ru.practicum.shareit.booking.dto.BookingDtoItem;
 
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
-public class ItemDto implements Comparable<ItemDto>{
+public class ItemDto implements Comparable<ItemDto> {
     private Long id;
     private String name;
     private String description;

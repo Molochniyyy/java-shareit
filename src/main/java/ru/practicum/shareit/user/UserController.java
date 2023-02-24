@@ -26,17 +26,17 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public UserDto getById(@PathVariable Long userId){
+    public UserDto getById(@PathVariable Long userId) {
         return service.findUserById(userId);
     }
 
     @GetMapping
-    public List<UserDto> getAll(){
+    public List<UserDto> getAll() {
         return service.getUsers();
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteById(@PathVariable Long userId){
+    public void deleteById(@PathVariable Long userId) {
         service.deleteUserById(userId);
     }
 }

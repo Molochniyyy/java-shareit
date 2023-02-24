@@ -63,7 +63,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingDto getBookingById(Long userId, Long bookingId) {
         Booking booking = repository.findById(bookingId)
-                .orElseThrow(() -> new BookingNorFoundException("Бронирование не найдено"));
+                .orElseThrow(() -> new BookingNotFoundException("Бронирование не найдено"));
         Item item = itemRepository.findById(booking.getItemId())
                 .orElseThrow(() -> new ItemNotFoundException("Вещь не найдена"));
         User booker = userRepository.findById(booking.getBookerId())
@@ -82,7 +82,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> getBookingsByBookerId(Long userId, String state) {
-        userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException("Пользователь не найден"));
+        userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
 
         List<Booking> bookingsOfBooker = repository.findBookingByBookerId(userId);
         List<Booking> bookingByState = getBookingsByState(state, bookingsOfBooker);
@@ -97,13 +97,13 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getBookingAllItemsByOwnerId(Long userId, String state) {
         List<Item> items = itemRepository.findItemsByOwnerId(userId);
 
-        if(!items.isEmpty()){
+        if (!items.isEmpty()) {
             List<Booking> bookings = new ArrayList<>(Collections.emptyList());
-            for(Item item : items){
+            for (Item item : items) {
                 List<Booking> bookingsOfItem = repository.findBookingByItemId(item.getId());
                 bookings.addAll(bookingsOfItem);
             }
-            List<Booking> bookingsByState = getBookingsByState(state,bookings);
+            List<Booking> bookingsByState = getBookingsByState(state, bookings);
             Collections.sort(bookingsByState);
             return getListBookingDto(bookingsByState);
         } else {

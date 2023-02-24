@@ -21,7 +21,6 @@ import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserValidator;
 import ru.practicum.shareit.user.model.User;
 
-import java.awt.print.Book;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -104,11 +103,11 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> searchItems(String text) {
         List<Item> items = new ArrayList<>();
-        if(!text.isEmpty()){
+        if (!text.isEmpty()) {
             String lowerCase = text.toLowerCase();
             List<Item> itemsOfSearch = repository.searchItems(lowerCase);
-            for(Item item : itemsOfSearch){
-                if(item.getAvailable()){
+            for (Item item : itemsOfSearch) {
+                if (item.getAvailable()) {
                     items.add(item);
                 }
             }

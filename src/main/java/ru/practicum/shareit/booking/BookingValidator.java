@@ -6,7 +6,6 @@ import ru.practicum.shareit.exceptions.FailBookingException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
-import java.sql.Time;
 import java.time.LocalDateTime;
 
 public class BookingValidator {
