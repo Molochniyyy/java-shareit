@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking;
 
 import lombok.AllArgsConstructor;
-import org.hibernate.mapping.Collection;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
@@ -33,7 +32,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingDto addBooking(Long userId, Booking booking) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("пользователя не существует"));
+                .orElseThrow(() -> new UserNotFoundException("Пользователя не существует"));
         Item item = itemRepository.findById(booking.getItemId())
                 .orElseThrow(() -> new ItemNotFoundException("Вещи не существует"));
 
@@ -46,7 +45,7 @@ public class BookingServiceImpl implements BookingService {
             Booking newBooking = repository.save(booking);
             return BookingWrapper.toBookingDto(newBooking, item, user);
         } else {
-            throw new FailItemException("Товар недоступен");
+            throw new ItemNotAvailableException("Товар недоступен");
         }
     }
 
