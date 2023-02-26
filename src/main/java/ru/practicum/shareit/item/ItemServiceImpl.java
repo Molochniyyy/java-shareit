@@ -41,10 +41,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto add(Long userId, Item item) {
+        ItemValidator.isValidCreateItem(item);
         UserValidator.isValidIdUsers(userId);
         if (userRepository.findById(userId).isPresent()) {
             item.setOwnerId(userId);
-            ItemValidator.isValidCreateItem(item);
             return ItemWrapper.toItemDto(repository.save(item));
         } else {
             throw new UserNotFoundException("Пользователя с таким id не существует");
@@ -68,10 +68,7 @@ public class ItemServiceImpl implements ItemService {
         if (userId.equals(item.getOwnerId())) {
             List<Booking> bookings = bookingRepository.findBookingByItemId(itemId);
             Collections.sort(bookings);
-            if (!bookings.isEmpty()) {
-                itemDto.setNextBooking(BookingWrapper.toBookingDtoItem(bookings.get(0)));
-                itemDto.setLastBooking(BookingWrapper.toBookingDtoItem(bookings.get(bookings.size() - 1)));
-            }
+            setNextLastBookings(bookings, itemDto);
             return itemDto;
         } else {
             List<Booking> bookings = bookingRepository.findBookingByItemId(itemId);
@@ -89,10 +86,7 @@ public class ItemServiceImpl implements ItemService {
                 List<Booking> bookings = bookingRepository.findBookingByItemId(item.getId());
                 ItemDto itemDto = ItemWrapper.toItemDto(item);
                 Collections.sort(bookings);
-                if (!bookings.isEmpty()) {
-                    itemDto.setNextBooking(BookingWrapper.toBookingDtoItem(bookings.get(0)));
-                    itemDto.setLastBooking(BookingWrapper.toBookingDtoItem(bookings.get(bookings.size() - 1)));
-                }
+                setNextLastBookings(bookings, itemDto);
                 result.add(itemDto);
                 Collections.sort(result);
             }
@@ -145,6 +139,7 @@ public class ItemServiceImpl implements ItemService {
                 throw new AddCommentWithoutBookingException("Booking not found");
             }
         }
+        assert comment != null;
         CommentDto commentDto = CommentWrapper.toCommentDto(comment);
         commentDto.setAuthorName(
                 userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"))
@@ -164,5 +159,14 @@ public class ItemServiceImpl implements ItemService {
             commentDtos.add(commentDto);
         }
         itemDto.setComments(commentDtos);
+    }
+
+    private void setNextLastBookings(List<Booking> bookings, ItemDto itemDto) {
+        if (!bookings.isEmpty()) {
+            if (bookings.size() > 1) {
+                itemDto.setNextBooking(BookingWrapper.toBookingDtoItem(bookings.get(bookings.size() - 2)));
+                itemDto.setLastBooking(BookingWrapper.toBookingDtoItem(bookings.get(bookings.size() - 1)));
+            }
+        }
     }
 }
