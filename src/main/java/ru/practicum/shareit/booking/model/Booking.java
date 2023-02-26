@@ -15,6 +15,7 @@ import java.util.Objects;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "bookings")
 public class Booking implements Comparable<Booking> {
     @Id
@@ -32,6 +33,7 @@ public class Booking implements Comparable<Booking> {
     @Enumerated(EnumType.STRING)
     @Column
     private BookingStatus status;
+
 
     @Override
     public boolean equals(Object o) {

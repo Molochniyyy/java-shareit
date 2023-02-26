@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingWrapper;
 import ru.practicum.shareit.exceptions.*;
@@ -30,20 +31,22 @@ public class BookingServiceImpl implements BookingService {
     Добавление нового бронирования
      */
     @Override
-    public BookingDto addBooking(Long userId, Booking booking) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Пользователя не существует"));
-        Item item = itemRepository.findById(booking.getItemId())
+    public BookingDto addBooking(Long userId, BookingDtoRequest bookingDtoRequest) {
+        Item item = itemRepository.findById(bookingDtoRequest.getItemId())
                 .orElseThrow(() -> new ItemNotFoundException("Вещи не существует"));
+        User booker = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("Пользователя не существует"));
 
-        BookingValidator.isValidBooking(booking, user, item);
+        Booking booking = BookingWrapper.toBooking(bookingDtoRequest, item, booker);
+
+        BookingValidator.isValidBooking(booking, booker, item);
 
         if (item.getAvailable()) {
             booking.setStatus(BookingStatus.WAITING);
             booking.setBookerId(userId);
             item.setAvailable(false);
-            Booking newBooking = repository.save(booking);
-            return BookingWrapper.toBookingDto(newBooking, item, user);
+            booking = repository.save(booking);
+            return BookingWrapper.toBookingDto(booking, item, booker);
         } else {
             throw new ItemNotAvailableException("Товар недоступен");
         }
@@ -54,7 +57,11 @@ public class BookingServiceImpl implements BookingService {
      */
     @Override
     public BookingDto updateBooking(Long userId, Long bookingId, String approved) {
-        return repositoryImpl.update(userId, bookingId, approved);
+        User booker = userRepository.findById(repository.findById(bookingId).get().getBookerId())
+                .orElseThrow(() -> new UserNotFoundException("Пользователя не существует"));
+        Item item = itemRepository.findById(repository.findById(bookingId).get().getItemId())
+                .orElseThrow(() -> new ItemNotFoundException("Вещи не существует"));
+        return repositoryImpl.update(userId, bookingId, approved, booker, item);
     }
 
     /*

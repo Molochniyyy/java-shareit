@@ -22,4 +22,13 @@ public class CommentWrapper {
         }
         return result;
     }
+
+    public static Comment toComment(CommentDto commentDto) {
+        return Comment.builder()
+                .id(commentDto.getId())
+                .text(commentDto.getText())
+                .itemId(commentDto.getItemId())
+                .created(commentDto.getCreated())
+                .build();
+    }
 }
