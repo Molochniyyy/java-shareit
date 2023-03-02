@@ -11,10 +11,10 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.booking.validator.BookingValidator;
 import ru.practicum.shareit.exceptions.ObjectNotFoundException;
 import ru.practicum.shareit.exceptions.UnavailableItemException;
 import ru.practicum.shareit.exceptions.UnsupportedOperationException;
-import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
@@ -33,9 +33,11 @@ public class BookingServiceTest {
         BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
         UserRepository userRepository = Mockito.mock(UserRepository.class);
         ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
+        BookingValidator bookingValidator = Mockito.mock(BookingValidator.class);
         BookingService bookingService = new BookingServiceImpl(bookingRepository,
                 userRepository,
-                itemRepository);
+                itemRepository,
+                bookingValidator);
         User testUser = new User(1L, "testname", "test@mail.com");
         Item testItem = new Item(1L, "test", "description", true, testUser, null);
         Mockito
@@ -44,7 +46,7 @@ public class BookingServiceTest {
         Mockito
                 .when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(testUser));
-        Assertions.assertThrows(ValidationException.class, () -> bookingService.addBooking(1L,
+        Assertions.assertThrows(ObjectNotFoundException.class, () -> bookingService.addBooking(1L,
                 new BookingDtoRequest(1L, LocalDateTime.now(), LocalDateTime.now().plusHours(5))));
         Mockito
                 .verify(userRepository, Mockito.times(1))
@@ -56,33 +58,15 @@ public class BookingServiceTest {
     }
 
     @Test
-    void createBookingWrongDates() {
-        BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
-        UserRepository userRepository = Mockito.mock(UserRepository.class);
-        ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
-        BookingService bookingService = new BookingServiceImpl(bookingRepository,
-                userRepository,
-                itemRepository);
-        User testUser = new User(1L, "testname", "test@mail.com");
-        Item testItem = new Item(1L, "test", "description", true, testUser, null);
-        Mockito
-                .when(itemRepository.findById(anyLong()))
-                .thenReturn(Optional.of(testItem));
-        Mockito
-                .when(userRepository.findById(anyLong()))
-                .thenReturn(Optional.of(testUser));
-        Assertions.assertThrows(ValidationException.class, () -> bookingService.addBooking(2L,
-                new BookingDtoRequest(1L, LocalDateTime.now().minusHours(1), LocalDateTime.now().plusHours(5))));
-    }
-
-    @Test
     void createBookingItemNotAvailableTest() {
         BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
         UserRepository userRepository = Mockito.mock(UserRepository.class);
         ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
+        BookingValidator bookingValidator = Mockito.mock(BookingValidator.class);
         BookingService bookingService = new BookingServiceImpl(bookingRepository,
                 userRepository,
-                itemRepository);
+                itemRepository,
+                bookingValidator);
         User testUser = new User(1L, "testname", "test@mail.com");
         Item testItem = new Item(1L,
                 "test",
@@ -112,9 +96,11 @@ public class BookingServiceTest {
         BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
         UserRepository userRepository = Mockito.mock(UserRepository.class);
         ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
+        BookingValidator bookingValidator = Mockito.mock(BookingValidator.class);
         BookingService bookingService = new BookingServiceImpl(bookingRepository,
                 userRepository,
-                itemRepository);
+                itemRepository,
+                bookingValidator);
         User testUser = new User(1L, "testname", "test@mail.com");
         Item testItem = new Item(1L,
                 "test",
@@ -155,9 +141,11 @@ public class BookingServiceTest {
         BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
         UserRepository userRepository = Mockito.mock(UserRepository.class);
         ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
+        BookingValidator bookingValidator = Mockito.mock(BookingValidator.class);
         BookingService bookingService = new BookingServiceImpl(bookingRepository,
                 userRepository,
-                itemRepository);
+                itemRepository,
+                bookingValidator);
         User testUser = new User(1L, "testname", "test@mail.com");
         Item testItem = new Item(1L,
                 "test",
@@ -187,9 +175,11 @@ public class BookingServiceTest {
         BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
         UserRepository userRepository = Mockito.mock(UserRepository.class);
         ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
+        BookingValidator bookingValidator = Mockito.mock(BookingValidator.class);
         BookingService bookingService = new BookingServiceImpl(bookingRepository,
                 userRepository,
-                itemRepository);
+                itemRepository,
+                bookingValidator);
         User testUser = new User(1L, "testname", "test@mail.com");
         Item testItem = new Item(1L,
                 "test",
@@ -219,9 +209,11 @@ public class BookingServiceTest {
         BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
         UserRepository userRepository = Mockito.mock(UserRepository.class);
         ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
+        BookingValidator bookingValidator = Mockito.mock(BookingValidator.class);
         BookingService bookingService = new BookingServiceImpl(bookingRepository,
                 userRepository,
-                itemRepository);
+                itemRepository,
+                bookingValidator);
         User testUser = new User(1L, "testname", "test@mail.com");
         Item testItem = new Item(1L,
                 "test",
@@ -257,9 +249,11 @@ public class BookingServiceTest {
         BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
         UserRepository userRepository = Mockito.mock(UserRepository.class);
         ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
+        BookingValidator bookingValidator = Mockito.mock(BookingValidator.class);
         BookingService bookingService = new BookingServiceImpl(bookingRepository,
                 userRepository,
-                itemRepository);
+                itemRepository,
+                bookingValidator);
         User testUser = new User(1L, "testname", "test@mail.com");
         Item testItem = new Item(1L,
                 "test",
@@ -295,9 +289,11 @@ public class BookingServiceTest {
         BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
         UserRepository userRepository = Mockito.mock(UserRepository.class);
         ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
+        BookingValidator bookingValidator = Mockito.mock(BookingValidator.class);
         BookingService bookingService = new BookingServiceImpl(bookingRepository,
                 userRepository,
-                itemRepository);
+                itemRepository,
+                bookingValidator);
         User testOwner = new User(1L, "test name", "test@mail.com");
         User testBooker = new User(2L, "test booker", "booker@mail.com");
         Item testItem = new Item(1L,
@@ -327,9 +323,11 @@ public class BookingServiceTest {
         BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
         UserRepository userRepository = Mockito.mock(UserRepository.class);
         ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
+        BookingValidator bookingValidator = Mockito.mock(BookingValidator.class);
         BookingService bookingService = new BookingServiceImpl(bookingRepository,
                 userRepository,
-                itemRepository);
+                itemRepository,
+                bookingValidator);
         User testOwner = new User(1L, "test name", "test@mail.com");
         User testBooker = new User(2L, "test booker", "booker@mail.com");
         Item testItem = new Item(1L,
@@ -360,9 +358,11 @@ public class BookingServiceTest {
         BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
         UserRepository userRepository = Mockito.mock(UserRepository.class);
         ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
+        BookingValidator bookingValidator = Mockito.mock(BookingValidator.class);
         BookingService bookingService = new BookingServiceImpl(bookingRepository,
                 userRepository,
-                itemRepository);
+                itemRepository,
+                bookingValidator);
         User testOwner = new User(1L, "test name", "test@mail.com");
         User testBooker = new User(2L, "test booker", "booker@mail.com");
         Item testItem = new Item(1L,
@@ -441,9 +441,11 @@ public class BookingServiceTest {
         BookingRepository bookingRepository = Mockito.mock(BookingRepository.class);
         UserRepository userRepository = Mockito.mock(UserRepository.class);
         ItemRepository itemRepository = Mockito.mock(ItemRepository.class);
+        BookingValidator bookingValidator = Mockito.mock(BookingValidator.class);
         BookingService bookingService = new BookingServiceImpl(bookingRepository,
                 userRepository,
-                itemRepository);
+                itemRepository,
+                bookingValidator);
         User testOwner = new User(1L, "test name", "test@mail.com");
         User testBooker = new User(2L, "test booker", "booker@mail.com");
         Item testItem = new Item(1L,

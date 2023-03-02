@@ -33,26 +33,23 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository repository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
+    private final BookingValidator bookingValidator;
 
     /*
     Добавление нового бронирования
      */
     @Override
     public BookingDto addBooking(Long userId, BookingDtoRequest bookingDtoRequest) {
+        bookingValidator.isValidBooking(bookingDtoRequest);
         Item item = itemRepository.findById(bookingDtoRequest.getItemId())
                 .orElseThrow(() -> new ObjectNotFoundException("Вещи не существует"));
         User booker = userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Пользователя не существует"));
 
         Booking booking = BookingWrapper.toBooking(bookingDtoRequest, item, booker);
-        if (item.getAvailable()) {
-            if (booking.getStart().isAfter(booking.getEnd())
-                    || booking.getEnd().isBefore(LocalDateTime.now())
-                    || booking.getStart().isBefore(LocalDateTime.now())) {
-                throw new ValidationException("Даты бронирования не верны");
-            }
+        if (item.getOwner().getId().equals(booker.getId())) {
+            throw new ObjectNotFoundException("Id пользователя и владельца вещи совпадают");
         }
-        BookingValidator.isValidBooking(booking, booker, item);
 
         if (item.getAvailable()) {
             return BookingWrapper.toBookingDto(repository.save(booking));
