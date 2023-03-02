@@ -3,43 +3,55 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exceptions.UserNotFoundException;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.model.UserWrapper;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository repository;
+
+    private final UserRepository userRepository;
+    private final UserRepositoryImpl userRepositoryImpl;
+
 
     @Override
-    public User add(User user) {
-        log.info("Попытка добавить пользователя");
-        return repository.add(user);
+    public UserDto saveUser(User user) {
+        UserValidator.isValidUserToNull(user);
+        UserValidator.isValidEmailUser(user);
+        User newUser = userRepository.save(user);
+        return UserWrapper.toUserDto(newUser);
     }
 
     @Override
-    public User update(Integer id, User user) {
-        log.info("Попытка обносить пользователя в id = {}", id);
-        return repository.update(id, user);
+    public UserDto updateUser(Long userId, User user) {
+        return userRepositoryImpl.update(userId, user);
     }
 
     @Override
-    public List<User> get() {
-        log.info("Попытка получить всех пользователей");
-        return repository.get();
+    public List<UserDto> getUsers() {
+        return UserWrapper.toListOfDto(userRepository.findAll());
     }
 
     @Override
-    public User getById(Integer id) {
-        log.info("Попытка получить пользователя с id = {}", id);
-        return repository.getById(id);
+    public UserDto findUserById(Long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            return UserWrapper.toUserDto(user);
+        } else {
+            throw new UserNotFoundException("Пользователя с таким id не существует");
+        }
     }
 
     @Override
-    public void delete(Integer id) {
-        repository.delete(id);
-        log.info("Удален пользователь с id = {}", id);
+    public void deleteUserById(Long userId) {
+        userRepository.deleteById(userId);
     }
 }
