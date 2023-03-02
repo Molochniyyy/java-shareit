@@ -110,6 +110,17 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+        mvc.perform(post("/bookings")
+                        .header("X-Sharer-User-Id", 1L)
+                        .content(mapper.writeValueAsString(new BookingDtoRequest(
+                                1L,
+                                LocalDateTime.of(2022, 3, 5, 11, 13),
+                                LocalDateTime.of(2023, 3, 5, 11, 12)
+                        )))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

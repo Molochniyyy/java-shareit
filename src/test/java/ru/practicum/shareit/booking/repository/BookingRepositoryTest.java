@@ -46,7 +46,7 @@ public class BookingRepositoryTest {
         LocalDateTime minDate = LocalDateTime.now().plusDays(1);
         LocalDateTime maxDate = LocalDateTime.now().plusDays(31);
         for (int i = 0; i < 100; i++) {
-            Booking booking = new Booking();
+            Booking booking = Booking.builder().build();
             booking.setItem(testItem);
             booking.setBooker(booker);
             booking.setStatus(BookingStatus.values()

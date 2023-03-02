@@ -30,7 +30,7 @@ public class ItemWrapper {
                 .build();
     }
 
-    public static Item toItem(ItemDto itemDto, User user, ItemRequest itemRequest) {
+   /* public static Item toItem(ItemDto itemDto, User user, ItemRequest itemRequest) {
         return Item.builder()
                 .id(itemDto.getId())
                 .name(itemDto.getName())
@@ -39,7 +39,15 @@ public class ItemWrapper {
                 .owner(user)
                 .request(itemRequest)
                 .build();
-    }
+    }*/
+   public static Item toItem(ItemDto itemDto, User user, ItemRequest itemRequest) {
+       return new Item(itemDto.getId(),
+               itemDto.getName(),
+               itemDto.getDescription(),
+               itemDto.getAvailable(),
+               user,
+               itemRequest);
+   }
 
     public static ItemDto toItemDto(Item item,
                                     BookingDtoItem lastBooking,

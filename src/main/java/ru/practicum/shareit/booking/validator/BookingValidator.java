@@ -10,9 +10,6 @@ import java.time.LocalDateTime;
 
 public class BookingValidator {
     public static void isValidBooking(Booking booking, User user, Item item) {
-        if (user.getId().equals(item.getOwner().getId())) {
-            throw new ObjectNotFoundException("Владелец вещи не может ее забронировать");
-        }
         if (item.getAvailable()) {
             if (booking.getStart().isAfter(booking.getEnd())
                     || booking.getEnd().isBefore(LocalDateTime.now())
@@ -20,5 +17,9 @@ public class BookingValidator {
                 throw new ValidationException("Даты бронирования не верны");
             }
         }
+        if (user.getId().equals(item.getOwner().getId())) {
+            throw new ObjectNotFoundException("Владелец вещи не может ее забронировать");
+        }
+
     }
 }

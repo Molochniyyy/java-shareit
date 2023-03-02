@@ -6,7 +6,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.ObjectNotFoundException;
-import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemWrapper;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -43,9 +42,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         User requester = userRepository.findById(userId).orElseThrow(
                 () -> new ObjectNotFoundException("Пользователь не найден")
         );
-        if (dto.getDescription() == null) {
-            throw new ValidationException("Нельзя добавить запрос с пустым описанием");
-        }
         ItemRequest itemRequest = ItemRequestWrapper.toItemRequest(dto, requester);
         return ItemRequestWrapper.toItemRequestDto(repository.save(itemRequest));
     }

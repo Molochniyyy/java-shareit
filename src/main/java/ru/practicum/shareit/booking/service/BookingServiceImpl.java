@@ -13,9 +13,7 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.model.BookingWrapper;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.validator.BookingValidator;
-import ru.practicum.shareit.exceptions.ObjectNotFoundException;
-import ru.practicum.shareit.exceptions.UnavailableItemException;
-import ru.practicum.shareit.exceptions.UnknownStateException;
+import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.exceptions.UnsupportedOperationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -47,7 +45,13 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new ObjectNotFoundException("Пользователя не существует"));
 
         Booking booking = BookingWrapper.toBooking(bookingDtoRequest, item, booker);
-
+        if (item.getAvailable()) {
+            if (booking.getStart().isAfter(booking.getEnd())
+                    || booking.getEnd().isBefore(LocalDateTime.now())
+                    || booking.getStart().isBefore(LocalDateTime.now())) {
+                throw new ValidationException("Даты бронирования не верны");
+            }
+        }
         BookingValidator.isValidBooking(booking, booker, item);
 
         if (item.getAvailable()) {
