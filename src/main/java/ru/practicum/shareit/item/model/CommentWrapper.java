@@ -1,34 +1,19 @@
 package ru.practicum.shareit.item.model;
 
 import ru.practicum.shareit.item.dto.CommentDto;
-
-import java.util.ArrayList;
-import java.util.List;
+import ru.practicum.shareit.item.dto.CommentRequestDto;
 
 public class CommentWrapper {
     public static CommentDto toCommentDto(Comment comment) {
         return CommentDto.builder()
                 .id(comment.getId())
                 .text(comment.getText())
-                .itemId(comment.getItemId())
+                .authorName(comment.getAuthor().getName())
                 .created(comment.getCreated())
                 .build();
     }
 
-    public static List<CommentDto> toCommentDtoList(Iterable<Comment> comments) {
-        List<CommentDto> result = new ArrayList<>();
-        for (Comment comment : comments) {
-            result.add(toCommentDto(comment));
-        }
-        return result;
-    }
-
-    public static Comment toComment(CommentDto commentDto) {
-        return Comment.builder()
-                .id(commentDto.getId())
-                .text(commentDto.getText())
-                .itemId(commentDto.getItemId())
-                .created(commentDto.getCreated())
-                .build();
+    public static Comment toComment(CommentRequestDto dto) {
+        return new Comment(dto.getText());
     }
 }
