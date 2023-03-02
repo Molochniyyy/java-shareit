@@ -37,14 +37,13 @@ public class UserControllerTest {
     private UserDto userDto;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         userDto = UserDto.builder()
                 .id(1L)
                 .name("test name")
                 .email("test@test.ru")
                 .build();
     }
-
 
 
     @Test
@@ -67,8 +66,9 @@ public class UserControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
-    void saveUserTest() throws Exception{
+    void saveUserTest() throws Exception {
         when(userService.saveUser(any(UserDto.class))).thenReturn(userDto);
         mvc.perform(post("/users")
                         .content(mapper.writeValueAsString(userDto))
@@ -93,6 +93,7 @@ public class UserControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
     void updateUserTest() throws Exception {
         when(userService.updateUser(anyLong(), any(UserDto.class)))
@@ -108,6 +109,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.name", is(userDto.getName()), String.class))
                 .andExpect(jsonPath("$.email", is(userDto.getEmail()), String.class));
     }
+
     @Test
     void deleteUserTest() throws Exception {
         mvc.perform(delete("/users/1")
@@ -116,6 +118,7 @@ public class UserControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
+
     @Test
     void getUserTest() throws Exception {
         when(userService.findUserById(anyLong()))
