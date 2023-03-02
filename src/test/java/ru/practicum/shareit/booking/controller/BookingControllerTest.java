@@ -42,7 +42,7 @@ public class BookingControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    
+
     private final BookingDto bookingDto = BookingDto.builder()
             .booker(new UserDto(2L, "booker", "booker@mail.com"))
             .item(new ItemDto(1L,

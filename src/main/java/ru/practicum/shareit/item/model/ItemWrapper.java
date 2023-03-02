@@ -15,7 +15,7 @@ public class ItemWrapper {
                 .name(item.getName())
                 .available(item.getAvailable())
                 .description(item.getDescription())
-                .requestId(item.getRequest()!=null ? item.getRequest().getId() : null)
+                .requestId(item.getRequest() != null ? item.getRequest().getId() : null)
                 .comments(comments)
                 .build();
     }
@@ -26,7 +26,7 @@ public class ItemWrapper {
                 .name(item.getName())
                 .available(item.getAvailable())
                 .description(item.getDescription())
-                .requestId(item.getRequest()!=null ? item.getRequest().getId() : null)
+                .requestId(item.getRequest() != null ? item.getRequest().getId() : null)
                 .build();
     }
 
@@ -50,7 +50,7 @@ public class ItemWrapper {
                 .description(item.getDescription())
                 .available(item.getAvailable())
                 .name(item.getName())
-                .requestId(item.getRequest()!=null ? item.getRequest().getId() : null)
+                .requestId(item.getRequest() != null ? item.getRequest().getId() : null)
                 .lastBooking(lastBooking)
                 .nextBooking(nextBooking)
                 .comments(comments)

@@ -160,7 +160,7 @@ public class ItemServiceImpl implements ItemService {
             throw new UnsupportedOperationException("Нельзя оставить комментарий," +
                     " так как данный предмет не был арендован");
         }
-        if(commentDto.getText().isBlank()){
+        if (commentDto.getText().isBlank()) {
             throw new ValidationException("Попытка добавить пустой комментарий");
         }
         Comment comment = CommentWrapper.toComment(commentDto);

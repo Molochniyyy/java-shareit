@@ -129,7 +129,7 @@ public class BookingServiceImpl implements BookingService {
                         pageable);
                 break;
             default:
-                throw new UnknownStateException("Unknown state: "+ state);
+                throw new UnknownStateException("Unknown state: " + state);
 
         }
         return bookings.stream()
@@ -175,7 +175,7 @@ public class BookingServiceImpl implements BookingService {
                         pageable);
                 break;
             default:
-                throw new UnknownStateException("Unknown state: "+ state);
+                throw new UnknownStateException("Unknown state: " + state);
         }
         return bookings.stream()
                 .map(BookingWrapper::toBookingDto)

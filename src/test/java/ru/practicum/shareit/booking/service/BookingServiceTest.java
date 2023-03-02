@@ -116,7 +116,7 @@ public class BookingServiceTest {
                         testUser,
                         BookingStatus.WAITING));
         bookingService.addBooking(1L,
-                new BookingDtoRequest( 1L, LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(5)));
+                new BookingDtoRequest(1L, LocalDateTime.now().plusHours(1), LocalDateTime.now().plusHours(5)));
         Mockito
                 .verify(userRepository, Mockito.times(1))
                 .findById(anyLong());

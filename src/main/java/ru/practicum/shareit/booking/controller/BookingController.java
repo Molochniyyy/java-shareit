@@ -68,10 +68,10 @@ public class BookingController {
      */
     @GetMapping("/owner")
     public Collection<BookingDto> getBookingAllItemsByOwnerId(@RequestHeader("X-Sharer-User-Id") Long ownerId,
-                                                        @RequestParam(name = "state",
-                                                                defaultValue = "ALL") String state,
-                                                        @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                                        @RequestParam(name = "size", defaultValue = "20") Integer size) {
+                                                              @RequestParam(name = "state",
+                                                                      defaultValue = "ALL") String state,
+                                                              @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                              @RequestParam(name = "size", defaultValue = "20") Integer size) {
         if (from < 0 || size < 1) {
             throw new UnsupportedOperationException("Неверные параметры запроса");
         }
