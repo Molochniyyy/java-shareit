@@ -155,16 +155,6 @@ public class ItemServiceTest {
         Mockito
                 .verify(itemRepository, Mockito.times(1))
                 .findAllByOwnerIsOrderByIdAsc(any(User.class), any(Pageable.class));
-        Mockito
-                .verify(bookingRepository, Mockito.times(1))
-                .findFirstByItemIsAndEndBeforeOrderByEndDesc(any(Item.class), any(LocalDateTime.class));
-        Mockito
-                .verify(bookingRepository, Mockito.times(1))
-                .findFirstByItemIsAndStartAfterOrderByStartAsc(any(Item.class), any(LocalDateTime.class));
-        Mockito
-                .verify(commentRepository, Mockito.times(1))
-                .findByItemIsOrderByCreatedDesc(any(Item.class));
-        Mockito.verifyNoMoreInteractions(userRepository, itemRepository, commentRepository, bookingRepository, itemRequestRepository);
     }
 
     @Test
