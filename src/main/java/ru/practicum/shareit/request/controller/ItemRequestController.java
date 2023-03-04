@@ -1,6 +1,6 @@
 package ru.practicum.shareit.request.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Create;
@@ -13,14 +13,10 @@ import java.util.Collection;
 
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = "/requests")
 public class ItemRequestController {
-    ItemRequestService itemRequestService;
-
-    @Autowired
-    public ItemRequestController(ItemRequestService itemRequestService) {
-        this.itemRequestService = itemRequestService;
-    }
+    private final ItemRequestService itemRequestService;
 
     @PostMapping
     public ItemRequestDto createRequest(@RequestHeader(name = "X-Sharer-User-Id") Long userId,

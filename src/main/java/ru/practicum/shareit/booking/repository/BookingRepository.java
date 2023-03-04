@@ -12,6 +12,7 @@ import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -65,5 +66,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Optional<Booking> findFirstByItemIsAndEndBeforeOrderByEndDesc(Item item, LocalDateTime localDateTime);
 
     Optional<Booking> findFirstByItemIsAndStartAfterOrderByStartAsc(Item item, LocalDateTime localDateTime);
+
+    List<Booking> findAllByStatusOrderByStartDesc(BookingStatus status);
 
 }

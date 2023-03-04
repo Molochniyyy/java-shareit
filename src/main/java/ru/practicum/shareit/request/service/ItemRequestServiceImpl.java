@@ -25,9 +25,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class ItemRequestServiceImpl implements ItemRequestService {
-    UserRepository userRepository;
-    ItemRequestRepository repository;
-    ItemRepository itemRepository;
+    private final UserRepository userRepository;
+    private final ItemRequestRepository repository;
+    private final ItemRepository itemRepository;
 
     public ItemRequestServiceImpl(@Lazy UserRepository userRepository, @Lazy ItemRequestRepository repository,
                                   @Lazy ItemRepository itemRepository) {

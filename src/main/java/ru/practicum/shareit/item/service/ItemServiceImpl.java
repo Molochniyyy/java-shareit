@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.model.BookingWrapper;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exceptions.ObjectNotFoundException;
@@ -30,9 +32,10 @@ import ru.practicum.shareit.user.validator.UserValidator;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.*;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -87,7 +90,7 @@ public class ItemServiceImpl implements ItemService {
         return ItemWrapper.toItemDto(repository.save(item), commentRepository.findByItemIsOrderByCreatedDesc(item)
                 .stream()
                 .map(CommentWrapper::toCommentDto)
-                .collect(Collectors.toList()));
+                .collect(toList()));
     }
 
     @Override
@@ -103,12 +106,12 @@ public class ItemServiceImpl implements ItemService {
                     commentRepository.findByItemIsOrderByCreatedDesc(item)
                             .stream()
                             .map(CommentWrapper::toCommentDto)
-                            .collect(Collectors.toList()));
+                            .collect(toList()));
         }
         return ItemWrapper.toItemDto(item, commentRepository.findByItemIsOrderByCreatedDesc(item)
                 .stream()
                 .map(CommentWrapper::toCommentDto)
-                .collect(Collectors.toList()));
+                .collect(toList()));
     }
 
     @Override
@@ -118,18 +121,16 @@ public class ItemServiceImpl implements ItemService {
         );
         Pageable page = PageRequest.of(from / size, size);
         Page<Item> items = repository.findAllByOwnerIsOrderByIdAsc(owner, page);
+        Map<Item, List<Comment>> comments = commentRepository.findAllByItemInOrderByItem(items.getContent())
+                .stream().collect(groupingBy(Comment::getItem));
+        Map<Item, List<Booking>> bookings = bookingRepository.findAllByStatusOrderByStartDesc(BookingStatus.APPROVED)
+                .stream().collect(groupingBy(Booking::getItem));
         Collection<ItemDto> itemDtos = new ArrayList<>();
         for (Item item : items) {
             itemDtos.add(ItemWrapper.toItemDto(item,
-                    BookingWrapper.toBookingDtoItem(bookingRepository.findFirstByItemIsAndEndBeforeOrderByEndDesc(item,
-                            LocalDateTime.now()).orElse(null)),
-                    BookingWrapper.toBookingDtoItem(bookingRepository.findFirstByItemIsAndStartAfterOrderByStartAsc(item,
-                            LocalDateTime.now()).orElse(null)),
-                    commentRepository.findByItemIsOrderByCreatedDesc(item)
-                            .stream()
-                            .map(CommentWrapper::toCommentDto)
-                            .collect(Collectors.toList()))
-            );
+                    bookings.getOrDefault(item, Collections.emptyList()),
+                    comments.getOrDefault(item, Collections.emptyList())
+                            .stream().map(CommentWrapper::toCommentDto).collect(toList())));
         }
         return itemDtos;
     }
@@ -142,7 +143,7 @@ public class ItemServiceImpl implements ItemService {
         Pageable page = PageRequest.of(from / size, size);
         return repository.searchItems(text, page).stream()
                 .map(ItemWrapper::toItemDto)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override

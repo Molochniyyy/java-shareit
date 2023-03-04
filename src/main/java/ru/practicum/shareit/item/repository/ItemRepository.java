@@ -22,5 +22,4 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     Page<Item> searchItems(String text, Pageable pageable);
 
     Collection<Item> findAllByRequestIn(Collection<ItemRequest> itemRequests);
-
 }
