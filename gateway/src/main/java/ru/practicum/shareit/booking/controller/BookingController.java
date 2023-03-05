@@ -23,9 +23,9 @@ public class BookingController {
 
     @GetMapping
     public ResponseEntity<Object> getBookingsOfUser(@RequestHeader("X-Sharer-User-Id") long userId,
-                                              @RequestParam(name = "state", defaultValue = "all") String stateParam,
-                                              @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                              @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
+                                                    @RequestParam(name = "state", defaultValue = "all") String stateParam,
+                                                    @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                    @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         BookingState state = BookingState.from(stateParam)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
         log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
@@ -41,7 +41,7 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<Object> createBooking(@RequestHeader("X-Sharer-User-Id") long userId,
-                                           @RequestBody @Valid BookingDtoRequest requestDto) {
+                                                @RequestBody @Valid BookingDtoRequest requestDto) {
         log.info("Creating booking {}, userId={}", requestDto, userId);
         return bookingClient.createBooking(userId, requestDto);
     }
@@ -52,6 +52,7 @@ public class BookingController {
         log.info("Get booking {}, userId={}", bookingId, userId);
         return bookingClient.getBooking(userId, bookingId);
     }
+
     @GetMapping("/owner")
     public ResponseEntity<Object> getBookingsOfUserItems(@RequestHeader(name = "X-Sharer-User-Id") Long userId,
                                                          @RequestParam(name = "state",
