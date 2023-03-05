@@ -72,6 +72,7 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$.available", is(itemDto.getAvailable()), Boolean.class));
 
     }
+
     @Test
     void addCommentTest() throws Exception {
         when(itemService.addComment(anyLong(), anyLong(), any(CommentRequestDto.class)))
