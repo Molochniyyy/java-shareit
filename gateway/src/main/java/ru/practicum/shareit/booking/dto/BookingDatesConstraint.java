@@ -10,8 +10,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BookingDatesConstraint {
     String message() default "";
-
     Class<?>[] groups() default {};
-
     Class<? extends Payload>[] payload() default {};
 }

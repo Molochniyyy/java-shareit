@@ -1,8 +1,6 @@
 package ru.practicum.shareit.booking.controller;
 
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -12,25 +10,20 @@ import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.exceptions.UnknownStateException;
 import ru.practicum.shareit.utils.Create;
 
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
-
-@Slf4j
 @RestController
-@RequestMapping("/bookings")
-@RequiredArgsConstructor
+@RequestMapping(path = "/bookings")
 public class BookingController {
     private final BookingClient bookingClient;
 
-    @GetMapping
-    public ResponseEntity<Object> getBookingsOfUser(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                    @RequestParam(name = "state", defaultValue = "all") String stateParam,
-                                                    @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                                    @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        BookingState state = BookingState.from(stateParam)
-                .orElseThrow(() -> new UnknownStateException("Unknown state: " + stateParam));
-        log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
-        return bookingClient.getBookingsOfUser(userId, state, from, size);
+    @Autowired
+    public BookingController(BookingClient bookingClient) {
+        this.bookingClient = bookingClient;
+    }
+
+    @PostMapping
+    public ResponseEntity<Object> createBooking(@RequestHeader(name = "X-Sharer-User-Id") Long userId,
+                                                @Validated({Create.class}) @RequestBody BookingDtoRequest bookingDto) {
+        return bookingClient.createBooking(userId, bookingDto);
     }
 
     @PatchMapping("/{bookingId}")
@@ -40,18 +33,23 @@ public class BookingController {
         return bookingClient.patchBooking(userId, bookingId, isApproved);
     }
 
-    @PostMapping
-    public ResponseEntity<Object> createBooking(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                @RequestBody @Validated({Create.class}) BookingDtoRequest requestDto) {
-        log.info("Creating booking {}, userId={}", requestDto, userId);
-        return bookingClient.createBooking(userId, requestDto);
+    @GetMapping("/{bookingId}")
+    public ResponseEntity<Object> getBooking(@RequestHeader(name = "X-Sharer-User-Id") Long userId,
+                                             @PathVariable Long bookingId) {
+        return bookingClient.getBooking(userId, bookingId);
     }
 
-    @GetMapping("/{bookingId}")
-    public ResponseEntity<Object> getBooking(@RequestHeader("X-Sharer-User-Id") long userId,
-                                             @PathVariable Long bookingId) {
-        log.info("Get booking {}, userId={}", bookingId, userId);
-        return bookingClient.getBooking(userId, bookingId);
+    @GetMapping
+    public ResponseEntity<Object> getBookingsOfUser(@RequestHeader(name = "X-Sharer-User-Id") Long userId,
+                                                    @RequestParam(name = "state", defaultValue = "ALL") String state,
+                                                    @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                    @RequestParam(name = "size", defaultValue = "20") Integer size) {
+        if (from < 0 || size < 1) {
+            throw new UnsupportedOperationException("Неверные параметры запроса");
+        }
+        BookingState bookingState = BookingState.from(state)
+                .orElseThrow(() -> new UnknownStateException(state));
+        return bookingClient.getBookingsOfUser(userId, bookingState, from, size);
     }
 
     @GetMapping("/owner")
