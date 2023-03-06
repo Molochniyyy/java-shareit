@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request.model;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestPostDto;
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@UtilityClass
 public class ItemRequestWrapper {
     public static ItemRequest toItemRequest(ItemRequestPostDto dto, User requester) {
         return ItemRequest.builder()

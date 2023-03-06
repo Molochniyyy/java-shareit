@@ -1,6 +1,6 @@
 package ru.practicum.shareit.booking.model;
 
-import lombok.RequiredArgsConstructor;
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoItem;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
@@ -9,8 +9,9 @@ import ru.practicum.shareit.item.model.ItemWrapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserWrapper;
 
-@RequiredArgsConstructor
-public class BookingWrapper {
+
+@UtilityClass
+public class  BookingWrapper {
 
     public static BookingDto toBookingDto(Booking booking) {
         return BookingDto.builder()

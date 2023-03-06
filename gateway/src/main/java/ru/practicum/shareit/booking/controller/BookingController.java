@@ -1,6 +1,6 @@
 package ru.practicum.shareit.booking.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -10,15 +10,14 @@ import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.exceptions.UnknownStateException;
 import ru.practicum.shareit.utils.Create;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+
 @RestController
 @RequestMapping(path = "/bookings")
+@RequiredArgsConstructor
 public class BookingController {
     private final BookingClient bookingClient;
-
-    @Autowired
-    public BookingController(BookingClient bookingClient) {
-        this.bookingClient = bookingClient;
-    }
 
     @PostMapping
     public ResponseEntity<Object> createBooking(@RequestHeader(name = "X-Sharer-User-Id") Long userId,
@@ -42,11 +41,8 @@ public class BookingController {
     @GetMapping
     public ResponseEntity<Object> getBookingsOfUser(@RequestHeader(name = "X-Sharer-User-Id") Long userId,
                                                     @RequestParam(name = "state", defaultValue = "ALL") String state,
-                                                    @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                                    @RequestParam(name = "size", defaultValue = "20") Integer size) {
-        if (from < 0 || size < 1) {
-            throw new UnsupportedOperationException("Неверные параметры запроса");
-        }
+                                                    @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                    @Positive @RequestParam(name = "size", defaultValue = "20") Integer size) {
         BookingState bookingState = BookingState.from(state)
                 .orElseThrow(() -> new UnknownStateException(state));
         return bookingClient.getBookingsOfUser(userId, bookingState, from, size);
@@ -56,11 +52,8 @@ public class BookingController {
     public ResponseEntity<Object> getBookingsOfUserItems(@RequestHeader(name = "X-Sharer-User-Id") Long userId,
                                                          @RequestParam(name = "state",
                                                                  defaultValue = "ALL") String state,
-                                                         @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                                         @RequestParam(name = "size", defaultValue = "20") Integer size) {
-        if (from < 0 || size < 1) {
-            throw new UnsupportedOperationException("Неверные параметры запроса");
-        }
+                                                         @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                         @Positive @RequestParam(name = "size", defaultValue = "20") Integer size) {
         BookingState bookingState = BookingState.from(state)
                 .orElseThrow(() -> new UnknownStateException(state));
 
